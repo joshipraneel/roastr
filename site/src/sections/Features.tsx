@@ -74,7 +74,7 @@ export function Features() {
           Your numbers plus a fresh roast, ready to share. Plus a weekly summary with the title you earned.
         </Tile>
         <Tile title="Four languages" className="md:col-span-3" extra={shot("6-languages.png", "Pick who roasts you: English, Hindi, Marathi or Kannada")}>
-          English, हिंदी, मराठी and ಕನ್ನಡ, with nearly 1,000 voiced lines. Three spice levels, from grandma-safe to savage. All jokes, no slurs. Or record your own.
+          English, <span lang="hi">हिंदी</span>, <span lang="mr">मराठी</span> and <span lang="kn">ಕನ್ನಡ</span>, with nearly 1,000 voiced lines. Three spice levels, from grandma-safe to savage. All jokes, no slurs. Or record your own.
         </Tile>
       </div>
     </section>

@@ -25,10 +25,11 @@ export function NightScene({ roast }: { roast: string }) {
       const label = root.current!.querySelector("[data-pill-label]")!
       counter.textContent = "12"
       label.textContent = "reels"
-      const split = SplitText.create("[data-roast]", { type: "words,chars" })
+      const roastEl = root.current!.querySelector("[data-roast]")
+      const split = roastEl && SplitText.create(roastEl, { type: "words,chars" })
       const mm = gsap.matchMedia()
       mm.add({ phone: "(max-width: 767px)", desk: "(min-width: 768px)" }, (ctx) => {
-        gsap
+        const tl = gsap
           .timeline({
             scrollTrigger: {
               trigger: root.current,
@@ -52,11 +53,14 @@ export function NightScene({ roast }: { roast: string }) {
           }, 0)
           .to("[data-pill]", { keyframes: { backgroundColor: ["#3ddc84", "#ffd54f", "#ff5252"] }, ease: "none", duration: 0.6 }, 0)
           .from("[data-busted]", { autoAlpha: 0, scale: 1.2, duration: 0.1 }, 0.62)
-          .from(split.chars, { autoAlpha: 0, stagger: 0.008, duration: 0.01 }, 0.7)
+        if (split) tl.from(split.chars, { autoAlpha: 0, stagger: 0.008, duration: 0.01 }, 0.7)
       })
       return () => {
         mm.revert()
-        split.revert()
+        split?.revert()
+        // The counter text was set by hand above; put back the resting end state.
+        counter.textContent = String(LIMIT)
+        label.textContent = "Limit"
       }
     },
     { scope: root, dependencies: [reduced] }
@@ -88,7 +92,7 @@ export function NightScene({ roast }: { roast: string }) {
             <div data-busted className="absolute inset-0 grid place-items-center bg-black/70 p-5 text-center">
               <div>
                 <p className="text-xs font-black tracking-[0.3em] text-hot">BUSTED</p>
-                <p data-roast className="mt-3 text-xl leading-snug font-extrabold">“{roast}”</p>
+                {roast && <p data-roast className="mt-3 text-xl leading-snug font-extrabold">“{roast}”</p>}
               </div>
             </div>
           </div>

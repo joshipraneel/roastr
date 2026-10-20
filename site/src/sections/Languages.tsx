@@ -38,7 +38,7 @@ export function Languages({ langs }: { langs: Picks["langs"] }) {
         <div className="mt-10 grid gap-12">
           {lines.map((r) => (
             <figure key={r.lang} data-line>
-              <figcaption className="text-sm font-bold uppercase opacity-80">{names[r.lang]}</figcaption>
+              <figcaption lang={r.lang} className="text-sm font-bold uppercase opacity-80">{names[r.lang]}</figcaption>
               <blockquote lang={r.lang} className="mt-3 text-[clamp(1.9rem,5.5vw,4rem)] leading-[1.1] font-black tracking-tight">
                 “{r.text}”
               </blockquote>

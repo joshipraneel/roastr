@@ -41,7 +41,7 @@ export function MorningScene({ roast }: { roast: string }) {
       <div className="relative grid w-full max-w-5xl items-center gap-10 md:grid-cols-[1fr_auto_1fr]">
         <div data-clock className="text-center md:text-right">
           <p className="text-6xl font-black tracking-tight tabular-nums md:text-7xl">07:00</p>
-          <p data-wake-roast className="mt-3 text-lg font-bold text-primary">“{roast}”</p>
+          {roast && <p data-wake-roast className="mt-3 text-lg font-bold text-primary">“{roast}”</p>}
         </div>
 
         <div data-alarm className="mx-auto w-[min(68vw,250px)] rounded-[2.2rem] border bg-[#0b0909] p-2 shadow-[0_30px_60px_-20px_var(--glow)]">
