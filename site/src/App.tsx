@@ -3,6 +3,7 @@ import { SmoothScroll } from "@/lib/motion"
 import { pickRoasts, type Roast } from "@/lib/pick-roasts"
 import roasts from "@/roasts.json"
 import { HeroExtras } from "@/sections/Hero"
+import { MorningScene } from "@/sections/MorningScene"
 import { NightScene } from "@/sections/NightScene"
 
 export default function App() {
@@ -11,7 +12,8 @@ export default function App() {
     <SmoothScroll>
       <HeroExtras bubbles={picks.bubbles} marquee={picks.marquee} />
       <NightScene roast={picks.night} />
-      {["Morning", "Features", "Languages", "Privacy", "Closing"].map((s) => (
+      <MorningScene roast={picks.morning} />
+      {["Features", "Languages", "Privacy", "Closing"].map((s) => (
         <section key={s} className="grid min-h-svh place-items-center border-b text-4xl font-black">
           {s}
         </section>
