@@ -1,5 +1,5 @@
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react"
-import { ReactLenis, type LenisRef } from "lenis/react"
+import { ReactLenis, useLenis, type LenisRef } from "lenis/react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { SplitText } from "gsap/SplitText"
@@ -28,24 +28,27 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (reduced) return
-    const lenis = lenisRef.current?.lenis
     const update = (time: number) => lenisRef.current?.lenis?.raf(time * 1000)
-    lenis?.on("scroll", ScrollTrigger.update)
     gsap.ticker.add(update)
     gsap.ticker.lagSmoothing(0)
-    return () => {
-      lenis?.off("scroll", ScrollTrigger.update)
-      gsap.ticker.remove(update)
-    }
+    return () => gsap.ticker.remove(update)
   }, [reduced])
 
   if (reduced) return <>{children}</>
   return (
     <>
       <ReactLenis root options={{ autoRaf: false, anchors: true }} ref={lenisRef} />
+      <SyncScrollTrigger />
       {children}
     </>
   )
+}
+
+// ReactLenis creates its instance in its own effect, so subscribe through the
+// hook rather than reading the ref, which is still empty on first mount.
+function SyncScrollTrigger() {
+  useLenis(ScrollTrigger.update)
+  return null
 }
 
 export { gsap, ScrollTrigger, SplitText, useGSAP }
