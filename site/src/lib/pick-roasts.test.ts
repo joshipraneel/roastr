@@ -17,6 +17,7 @@ function allTexts(p: Picks) {
     p.night,
     p.morning,
     p.closing,
+    p.langs.en.text,
     p.langs.hi.text,
     p.langs.mr.text,
     p.langs.kn.text,
@@ -31,6 +32,7 @@ test("pickRoasts fills every slot from the real pool without repeats", () => {
     const p = pickRoasts(pool, seeded(seed))
     assert.equal(p.bubbles.length, 2)
     assert.equal(p.marquee.length, 8)
+    assert.equal(p.langs.en.lang, "en")
     assert.equal(p.langs.hi.lang, "hi")
     assert.equal(p.langs.mr.lang, "mr")
     assert.equal(p.langs.kn.lang, "kn")

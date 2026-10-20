@@ -6,7 +6,7 @@ export type Picks = {
   night: string
   morning: string
   closing: string
-  langs: { hi: Roast; mr: Roast; kn: Roast }
+  langs: { en: Roast; hi: Roast; mr: Roast; kn: Roast }
 }
 
 // Picks this visit's roasts. No line appears twice on the page; when a context
@@ -36,6 +36,6 @@ export function pickRoasts(pool: Roast[], rand: () => number = Math.random): Pic
     closing,
     bubbles: many(2, ["doom", "busted"]),
     marquee: many(8, ["doom", "busted"]),
-    langs: { hi: lang("hi"), mr: lang("mr"), kn: lang("kn") },
+    langs: { en: lang("en"), hi: lang("hi"), mr: lang("mr"), kn: lang("kn") },
   }
 }
