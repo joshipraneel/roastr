@@ -47,6 +47,7 @@ Doomscroll past your limit and it roasts you, out loud, until you put the phone 
 - **No internet.** Roastr doesn't have network permission. Nothing you do leaves your phone.
 - **No account, no ads, no analytics.**
 - **Minutes mode** only sees how long YouTube and Instagram were open, through Android's Usage Access.
+- **The Sunday report** reads how long each app was open that week, and how often you unlocked, on your phone. Only the week's total is kept. Turn it off in Settings.
 - **Reel mode** uses an Accessibility service that only listens to YouTube and Instagram and only counts swipes. It asks for consent first and never reads what you watch, type or message.
 - **Delete everything** by uninstalling or clearing the app's storage.
 
@@ -72,7 +73,7 @@ To update, install the newer APK from [Releases](https://github.com/joshipraneel
 
 | Permission | Why |
 |---|---|
-| Usage access | Count today's minutes in YouTube and Instagram (minutes mode). |
+| Usage access | Count today's minutes in YouTube and Instagram (minutes mode), and build the Sunday report from each app's time that week. |
 | Accessibility *(optional)* | Count reel swipes and send you home at the limit (reel mode). |
 | Notifications | Tell you when you're busted and show the alarm. |
 | Alarms and full-screen | Ring on time and show the wake-up mission over the lock screen. Android 14+ may need you to allow full-screen alarms; the Wake-up page tells you if so. |
