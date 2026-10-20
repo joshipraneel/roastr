@@ -110,3 +110,9 @@
     animation: none;
   }
 }
+
+/* SplitText word masks clip descenders at tight line-heights; give them room. */
+[data-closing-title] div {
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
