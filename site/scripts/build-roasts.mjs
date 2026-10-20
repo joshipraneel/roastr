@@ -7,7 +7,7 @@ import { resolve } from "node:path"
 
 const LANGS = ["en", "hi", "mr", "kn"]
 const SPICES = new Set(["mild", "spicy"]) // harasser lines stay in the app only
-const CAP = 40 // per language and context
+const CAP = 20 // per language and context
 
 // Rows look like: | # | Text | Romanized | Meaning (English) | Spice | Context |
 export function parseWordlist(md, lang) {
