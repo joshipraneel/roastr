@@ -79,6 +79,19 @@ To update, install the newer APK from [Releases](https://github.com/joshipraneel
 | Physical activity *(optional)* | Count steps for the 30-step mission. |
 | Microphone *(optional)* | Record your own roasts. |
 
+## What's new in 1.1
+
+- **Sunday roast report.** Every Sunday morning, a notification brings your week's screen time, roasted. Swipe through cards for:
+  - your total and daily average, and the change from last week
+  - your top 5 apps and your worst day
+  - your after-midnight scrolling and how often you unlocked
+  - what you could have done instead, and the title you earned
+
+  Share any card as an image.
+- **Over 1,500 new roast lines**, at least 365 each in English, हिंदी, मराठी and ಕನ್ನಡ, so a year of Sundays never repeats. They follow your spice level.
+- **Turn it off** in Settings > Sunday roast report.
+- **Still private.** The report reads how long each app was open that week, and how often you unlocked, through the Usage Access you already gave. It's made on your phone, and only the week's total is kept. See the [privacy policy](https://joshipraneel.github.io/roastr/privacy/).
+
 ## What's new in 1.0
 
 - First public release.
