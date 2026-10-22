@@ -1,5 +1,5 @@
 export type Lang = "en" | "hi" | "mr" | "kn"
-export type Roast = { lang: Lang; text: string; meaning: string; ctx: string }
+export type Roast = { lang: Lang; text: string; meaning?: string; ctx: string }
 export type Picks = {
   bubbles: string[]
   marquee: string[]

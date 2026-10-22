@@ -16,7 +16,8 @@ export function parseWordlist(md, lang) {
     if (!/^\| \d+ \|/.test(line)) continue
     const [, , text, , meaning, spice, ctx] = line.split("|").map((c) => c.trim())
     if (!SPICES.has(spice)) continue
-    out.push({ lang, text, meaning: meaning || text, ctx })
+    // English rows have no separate meaning; leave it out to keep the bundle small.
+    out.push(meaning && meaning !== text ? { lang, text, meaning, ctx } : { lang, text, ctx })
   }
   return out
 }

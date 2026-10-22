@@ -47,7 +47,7 @@ export function Languages({ langs }: { langs: Roast[] }) {
   )
 
   return (
-    <section ref={root} className="bg-primary px-4 py-24 text-primary-foreground">
+    <section ref={root} id="languages" className="bg-primary px-4 py-24 text-primary-foreground">
       <div className="mx-auto max-w-5xl text-center">
         <p className="text-sm font-black tracking-[0.3em] uppercase opacity-80">Roasted in your language</p>
         <div className={`mt-10 grid gap-12 ${lines.length === 1 ? "min-h-72 content-center" : ""}`}>

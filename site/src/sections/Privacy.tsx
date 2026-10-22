@@ -25,7 +25,7 @@ export function Privacy() {
   )
 
   return (
-    <section ref={root} className="mx-auto max-w-6xl px-4 py-24">
+    <section ref={root} id="privacy" className="mx-auto max-w-6xl px-4 py-24">
       <h2 className="text-[clamp(2.2rem,6vw,4rem)] leading-none font-black tracking-tight">Private by design</h2>
       <p className="mt-4 text-lg text-muted-foreground">
         Roastr doesn't even have{" "}

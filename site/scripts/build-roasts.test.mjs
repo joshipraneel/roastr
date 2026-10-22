@@ -19,13 +19,12 @@ test("parseWordlist keeps mild and spicy rows with their meaning", () => {
   ])
 })
 
-test("parseWordlist uses the text as meaning for English rows", () => {
+test("parseWordlist leaves meaning out of English rows", () => {
   const en = "| 87 | The reels will be there tomorrow! Stop! |  |  | mild | doom |\n"
   assert.deepEqual(parseWordlist(en, "en"), [
     {
       lang: "en",
       text: "The reels will be there tomorrow! Stop!",
-      meaning: "The reels will be there tomorrow! Stop!",
       ctx: "doom",
     },
   ])

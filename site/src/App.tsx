@@ -1,21 +1,21 @@
-import { useMemo } from "react"
 import { SmoothScroll } from "@/lib/motion"
-import { pickRoasts, type Roast } from "@/lib/pick-roasts"
-import roasts from "@/roasts.json"
+import type { Picks } from "@/lib/pick-roasts"
 import { Closing } from "@/sections/Closing"
 import { Features } from "@/sections/Features"
+import { Header } from "@/sections/Header"
 import { HeroExtras } from "@/sections/Hero"
 import { Languages } from "@/sections/Languages"
 import { MorningScene } from "@/sections/MorningScene"
 import { NightScene } from "@/sections/NightScene"
 import { Privacy } from "@/sections/Privacy"
 
-export default function App() {
-  const picks = useMemo(() => pickRoasts(roasts as Roast[]), [])
+// main.tsx loads the roast pool as its own chunk and picks this visit's lines.
+export default function App({ picks }: { picks: Picks }) {
   return (
     <SmoothScroll>
+      <Header />
       <HeroExtras bubbles={picks.bubbles} marquee={picks.marquee} />
-      <main>
+      <main id="main">
         <NightScene roast={picks.night} />
         <MorningScene roast={picks.morning} />
         <Features />
