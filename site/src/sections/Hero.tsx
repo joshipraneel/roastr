@@ -4,10 +4,10 @@ import { Marquee } from "@/components/ui/marquee"
 import { gsap, ScrollTrigger, SplitText, useGSAP, useReducedMotion } from "@/lib/motion"
 
 // Bubbles sit against the bezels, never over the screenshot's own UI. The
-// second one wears the app's shame-card look. Phones get only the first.
+// second one wears the app's shame-card look. Below 1280px only the first shows.
 const bubbleSpots = [
-  "top-[14%] right-[calc(100%-1.5rem)] border-border-strong bg-surface-2 max-md:top-[-7%] max-md:right-auto max-md:-left-6 max-md:max-w-[13rem]",
-  "bottom-[12%] left-[calc(100%-1.5rem)] border-transparent bg-shame text-roast max-md:hidden",
+  "top-[14%] right-[calc(100%-1.5rem)] border-border-strong bg-surface-2 max-xl:top-[-7%] max-xl:right-auto max-xl:-left-6 max-xl:max-w-[13rem]",
+  "bottom-[12%] left-[calc(100%-1.5rem)] border-transparent bg-shame text-roast max-xl:hidden",
 ]
 
 // The hero itself is static HTML in index.html. This adds this visit's roast

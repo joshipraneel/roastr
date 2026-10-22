@@ -3,9 +3,16 @@ import { ReactLenis, useLenis, type LenisRef } from "lenis/react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { SplitText } from "gsap/SplitText"
+import { Observer } from "gsap/Observer"
+import type Lenis from "lenis"
 import { useGSAP } from "@gsap/react"
 
-gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP)
+gsap.registerPlugin(ScrollTrigger, SplitText, Observer, useGSAP)
+
+// The page's Lenis instance, and whether an anchor link is mid-jump, for
+// stepScene below.
+let lenisNow: Lenis | null = null
+const nav = { jumping: false }
 
 const query = "(prefers-reduced-motion: reduce)"
 
@@ -55,18 +62,109 @@ function SyncScrollTrigger() {
   const lenis = useLenis(ScrollTrigger.update)
   useEffect(() => {
     if (!lenis) return
+    lenisNow = lenis
     const onClick = (e: MouseEvent) => {
       const a = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"]')
       const target = a && document.querySelector(a.hash)
       if (!target) return
       e.preventDefault()
       history.pushState(null, "", a.hash)
-      lenis.scrollTo(target as HTMLElement)
+      nav.jumping = true
+      lenis.scrollTo(target as HTMLElement, { force: true, onComplete: () => (nav.jumping = false) })
     }
     document.addEventListener("click", onClick)
     return () => document.removeEventListener("click", onClick)
   }, [lenis])
   return null
+}
+
+// Plays a pinned scene one beat per scroll, swipe or arrow key, so a fast
+// scroller still sees every change. The page holds while the scene is at the
+// top; past the last beat (or on Skip) it scrolls on, and scrolling back up
+// walks back through the beats. Beats are the timeline's labels.
+// ponytail: holding the page is deliberate scroll-jacking the user asked for;
+// Skip, keys and nav links always get out.
+export function stepScene(trigger: Element, tl: gsap.core.Timeline, { end = "+=30%", speed = 4.5, skip }: { end?: string; speed?: number; skip?: HTMLElement | null }) {
+  const labels = Object.entries(tl.labels).sort((a, b) => a[1] - b[1]).map(([name]) => name)
+  let idx = 0
+  let busy = false
+  let locked = false
+
+  const show = (on: boolean) => skip && (skip.hidden = !on)
+  const unlock = () => {
+    if (!locked) return
+    locked = false
+    obs.disable()
+    show(false)
+    lenisNow?.start()
+  }
+  const release = (down: boolean) => {
+    unlock()
+    lenisNow?.scrollTo(down ? st.end + 2 : st.start - 2, { force: true })
+  }
+  const lock = (i: number) => {
+    // Skip anchor jumps, and jumps that land past the scene (scrollbar drag,
+    // Home/End, a restored scroll position).
+    if (nav.jumping || !lenisNow || st.progress <= 0 || st.progress >= 1) return
+    locked = true
+    busy = false
+    idx = i
+    tl.seek(labels[i])
+    lenisNow.stop()
+    // Hold 1px inside the range: sitting exactly on an edge re-fires onEnter
+    // as soon as the release scroll moves, which would lock it again.
+    lenisNow.scrollTo(i ? st.end - 1 : st.start + 1, { immediate: true, force: true })
+    obs.enable()
+    show(true)
+  }
+  // One beat per gesture: a wheel or trackpad burst fires dozens of events,
+  // so only the first after a quiet gap counts.
+  let last = 0
+  const step = (dir: 1 | -1) => {
+    const now = performance.now()
+    const quiet = now - last > 240
+    last = now
+    if (!locked || busy || !quiet) return
+    const n = idx + dir
+    if (n < 0) return release(false)
+    if (n >= labels.length) return release(true)
+    busy = true
+    const d = Math.max(0.4, Math.abs(tl.labels[labels[n]] - tl.time()) * speed)
+    idx = n
+    tl.tweenTo(labels[n], { duration: d, ease: "power1.inOut", onComplete: () => void (busy = false) })
+  }
+
+  const st = ScrollTrigger.create({
+    trigger,
+    start: "top top",
+    end,
+    pin: true,
+    onEnter: () => lock(0),
+    onEnterBack: () => lock(labels.length - 1),
+    onLeave: unlock,
+    onLeaveBack: unlock,
+  })
+  const obs = Observer.create({ target: window, type: "wheel,touch", wheelSpeed: -1, tolerance: 10, preventDefault: true, onUp: () => step(1), onDown: () => step(-1) })
+  obs.disable()
+  const onKey = (e: KeyboardEvent) => {
+    if (!locked) return
+    const dir = ["ArrowDown", "PageDown", " "].includes(e.key) ? 1 : ["ArrowUp", "PageUp"].includes(e.key) ? -1 : 0
+    if (!dir) return
+    e.preventDefault()
+    step(dir)
+  }
+  const onSkip = () => {
+    tl.seek(labels[labels.length - 1])
+    release(true)
+  }
+  window.addEventListener("keydown", onKey)
+  skip?.addEventListener("click", onSkip)
+  return () => {
+    window.removeEventListener("keydown", onKey)
+    skip?.removeEventListener("click", onSkip)
+    unlock()
+    obs.kill()
+  }
 }
 
 // Fades every [data-up] inside `scope` up into place as it scrolls into view.

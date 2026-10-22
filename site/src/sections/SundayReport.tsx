@@ -16,7 +16,7 @@ const apps: [string, number][] = [
 
 function Card({ label, children, line }: { label: string; children: ReactNode; line?: string }) {
   return (
-    <li data-up className="flex aspect-[4/5] w-[78vw] max-w-72 shrink-0 snap-center flex-col rounded-3xl bg-shame p-6 text-white shadow-raised lg:aspect-auto lg:min-h-[26rem] lg:w-auto lg:max-w-none">
+    <li data-up className="flex aspect-[4/5] w-[78vw] max-w-72 shrink-0 snap-center flex-col rounded-3xl bg-shame p-6 text-white shadow-raised xl:aspect-auto xl:min-h-[26rem] xl:w-auto xl:max-w-none">
       <p className="text-xs font-semibold tracking-[0.2em] text-white/70 uppercase">{label}</p>
       <div className="mt-4">{children}</div>
       {line && <p className="mt-auto pt-4 text-sm leading-snug text-white/85">“{line}”</p>}
@@ -39,7 +39,7 @@ export function SundayReport() {
           lede="Your week's screen time, roasted, one swipeable card at a time. Share any card as an image. It's made on your phone, and you can switch it off in Settings."
         />
       </div>
-      <ol className="mx-auto mt-12 flex max-w-6xl snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:px-8 lg:grid lg:grid-cols-5 lg:overflow-visible">
+      <ol className="mx-auto mt-12 flex max-w-6xl snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:px-8 xl:grid xl:grid-cols-5 xl:overflow-visible">
         <Card label="This week" line="31h on your phone. That's not screen time, that's a second job with no salary.">
           <p className="font-display text-display-lg text-roast tabular-nums">31h 12m</p>
           <p className="mt-1 text-sm text-white/70">4h 27m a day</p>

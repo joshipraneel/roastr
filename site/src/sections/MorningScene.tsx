@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import { AlarmClock, ChevronDown, CircleCheck, Volume2 } from "lucide-react"
 import { PhoneStatus } from "@/components/PhoneStatus"
-import { gsap, useGSAP, useReducedMotion } from "@/lib/motion"
+import { gsap, stepScene, useGSAP, useReducedMotion } from "@/lib/motion"
 
 // The app's real maths mission. The second sum gets a wrong answer first,
 // because the app mocks those.
@@ -22,8 +22,8 @@ export function MorningScene({ roast }: { roast: string }) {
       if (reduced) return
       const q = gsap.utils.selector(root)
       const mm = gsap.matchMedia()
-      mm.add({ any: "all", phone: "(max-width: 767px)", short: "(max-height: 640px)" }, (ctx) => {
-        const { phone, short } = ctx.conditions!
+      mm.add({ any: "all", short: "(max-height: 640px)" }, (ctx) => {
+        const { short } = ctx.conditions!
         gsap.set(q("[data-alarm]"), { autoAlpha: 1 })
         gsap.set(q("[data-mission], [data-done]"), { autoAlpha: 0 })
         gsap.set(q("[data-sum]"), { autoAlpha: 0 })
@@ -36,17 +36,19 @@ export function MorningScene({ roast }: { roast: string }) {
 
         const tl = gsap.timeline({
           defaults: { ease: "none" },
-          scrollTrigger: short
-            ? { trigger: root.current, start: "top 60%", toggleActions: "play none none none" }
-            : { trigger: root.current, start: "top top", end: phone ? "+=160%" : "+=230%", pin: true, scrub: 0.6 },
+          paused: !short,
+          scrollTrigger: short ? { trigger: root.current, start: "top 60%", toggleActions: "play none none none" } : undefined,
         })
-        tl.to(q("[data-sky]"), { autoAlpha: 1, yPercent: 0, duration: 0.85 }, 0)
+        tl.addLabel("start", 0)
+          .to(q("[data-sky]"), { autoAlpha: 1, yPercent: 0, duration: 0.85 }, 0)
           // A phone on vibrate barely moves; keep it to a few pixels.
           .to(q("[data-device]"), { keyframes: { x: [0, -2, 2, -2, 2, -1, 1, 0] }, duration: 0.08 }, 0.04)
+          .addLabel("alarm", 0.1)
           .to(q("[data-alarm]"), { autoAlpha: 0, duration: 0.04 }, 0.14)
           .to(q("[data-mission]"), { autoAlpha: 1, duration: 0.04 }, 0.15)
 
-        // Type an answer a digit at a time, then tap Check.
+        // Type an answer a digit at a time, then tap Check. Labels mark each
+        // beat (alarm, wrong answer, each solved sum, done) for snapping.
         let at = 0.2
         const type = (field: string, sel: string) => {
           tl.set(q(`${field} [data-placeholder]`), { autoAlpha: 0 }, at)
@@ -61,6 +63,7 @@ export function MorningScene({ roast }: { roast: string }) {
             type(field, `${field} [data-wrong-answer]`)
             tl.to(q(`${field} [data-field]`), { borderColor: "#f2b8b5", duration: 0.01 }, at)
               .set(q(`${field} [data-error]`), { autoAlpha: 1 }, at)
+              .addLabel(`wrong${i}`, at + 0.03)
               .set(q(`${field} [data-wrong-answer] [data-digit]`), { autoAlpha: 0 }, at + 0.06)
             at += 0.06
           }
@@ -68,6 +71,7 @@ export function MorningScene({ roast }: { roast: string }) {
           tl.to(q(`${field} [data-field]`), { borderColor: "#3ddc84", duration: 0.01 }, at)
             .set(q(`${field} [data-error]`), { autoAlpha: 0 }, at)
             .set(q("[data-dot]")[i], { backgroundColor: "var(--ok)" }, at)
+            .addLabel(`solved${i}`, at + 0.015)
           at += 0.03
           if (i < sums.length - 1) tl.set(q(field), { autoAlpha: 0 }, at).set(q(`[data-sum="${i + 1}"]`), { autoAlpha: 1 }, at)
         })
@@ -75,8 +79,10 @@ export function MorningScene({ roast }: { roast: string }) {
           .to(q("[data-done]"), { autoAlpha: 1, duration: 0.04 }, at + 0.02)
           .to(q("[data-quote]"), { autoAlpha: 1, y: 0, duration: 0.05, ease: "power2.out" }, at + 0.04)
           .to(q("[data-payoff]"), { autoAlpha: 1, y: 0, duration: 0.05, ease: "power2.out" }, at + 0.07)
-          .to({}, { duration: 0.08 })
+          .addLabel("done", at + 0.12)
+          .to({}, { duration: 0.02 })
         if (short) tl.timeScale(0.3)
+        else return stepScene(root.current!, tl, { skip: q("[data-skip]")[0] })
       })
       return () => mm.revert()
     },
@@ -85,6 +91,9 @@ export function MorningScene({ roast }: { roast: string }) {
 
   return (
     <section ref={root} className="relative isolate grid min-h-svh place-items-center overflow-hidden px-5 py-10 md:px-8">
+        <button data-skip hidden className="absolute top-20 right-5 z-10 h-11 rounded-full border border-border-strong bg-surface-1/80 px-4 text-sm text-muted-foreground backdrop-blur transition-colors hover:text-foreground md:right-8">
+          Skip scene ↓
+        </button>
       <div data-sky className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent_0%,#2a0f1a55_40%,#8a2a1e66_80%,#ff7a5944_100%)]" />
       <div className="grid w-full max-w-6xl items-center gap-6 md:grid-cols-[auto_1fr] md:gap-20">
         <div className="text-center md:order-2 md:text-left">

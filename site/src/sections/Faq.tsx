@@ -21,6 +21,7 @@ const faqs: [string, ReactNode][] = [
   ["How do I update?", "Install the newer APK over the old one. Your stats are kept."],
   ["Can I turn off the Sunday report?", "Yes: Settings › Sunday roast report."],
   ["Which phones does it run on?", "Android 12 or newer."],
+  ["Is there an iPhone version?", "Not yet. Roastr is Android-only for now."],
   ["Found a bug, or a roast that went too far?", <><a className={a} href={`${REPO}/issues`}>Open an issue</a> on GitHub.</>],
 ]
 

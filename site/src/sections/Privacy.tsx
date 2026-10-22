@@ -40,7 +40,7 @@ export function Privacy() {
 
   return (
     <section ref={root} id="privacy" className="mx-auto max-w-6xl px-5 py-section md:px-8">
-      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <SectionHeader eyebrow="Privacy" title="Your roasts never leave your phone." />
           <ul className="mt-10 space-y-7">
