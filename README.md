@@ -80,6 +80,10 @@ To update, install the newer APK from [Releases](https://github.com/joshipraneel
 | Physical activity *(optional)* | Count steps for the 30-step mission. |
 | Microphone *(optional)* | Record your own roasts. |
 
+## What's new in 1.2
+
+- **Funnier roasts.** Lines that only gave orders or scolded ("Stop scrolling!", "Put the phone down") are now actual jokes, in English, हिंदी, मराठी and ಕನ್ನಡ. That's over 600 lines, with fresh voice clips.
+
 ## What's new in 1.1
 
 - **Sunday roast report.** Every Sunday morning, a notification brings your week's screen time, roasted. Swipe through cards for:

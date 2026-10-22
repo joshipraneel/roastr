@@ -17,10 +17,7 @@ function allTexts(p: Picks) {
     p.night,
     p.morning,
     p.closing,
-    p.langs.en.text,
-    p.langs.hi.text,
-    p.langs.mr.text,
-    p.langs.kn.text,
+    ...p.langs.map((r) => r.text),
   ]
 }
 
@@ -32,10 +29,8 @@ test("pickRoasts fills every slot from the real pool without repeats", () => {
     const p = pickRoasts(pool, seeded(seed))
     assert.equal(p.bubbles.length, 2)
     assert.equal(p.marquee.length, 8)
-    assert.equal(p.langs.en.lang, "en")
-    assert.equal(p.langs.hi.lang, "hi")
-    assert.equal(p.langs.mr.lang, "mr")
-    assert.equal(p.langs.kn.lang, "kn")
+    assert.deepEqual(p.langs.slice(0, 4).map((r) => r.lang), ["en", "hi", "mr", "kn"])
+    assert.equal(p.langs.length, pool.length - 13)
     const texts = allTexts(p)
     assert.equal(new Set(texts).size, texts.length)
     assert.ok(texts.every((t) => t.length > 0))
@@ -56,5 +51,5 @@ test("pickRoasts never repeats and never throws on a tiny pool", () => {
   const p = pickRoasts(pool, seeded(7))
   const texts = allTexts(p)
   assert.equal(new Set(texts).size, texts.length)
-  assert.equal(p.langs.kn.text, "k")
+  assert.deepEqual(p.langs.map((r) => r.text), ["h", "m", "k"])
 })

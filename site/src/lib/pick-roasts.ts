@@ -6,12 +6,13 @@ export type Picks = {
   night: string
   morning: string
   closing: string
-  langs: { en: Roast; hi: Roast; mr: Roast; kn: Roast }
+  langs: Roast[]
 }
 
 // Picks this visit's roasts. No line appears twice on the page; when a context
 // runs dry it falls back to any unused line of the same language, and the
-// bubbles and marquee shrink instead of throwing.
+// bubbles and marquee shrink instead of throwing. `langs` is every remaining
+// line, shuffled and taken round-robin en, hi, mr, kn so the band never repeats.
 export function pickRoasts(pool: Roast[], rand: () => number = Math.random): Picks {
   const used = new Set<string>()
 
@@ -25,17 +26,22 @@ export function pickRoasts(pool: Roast[], rand: () => number = Math.random): Pic
   }
   const many = (n: number, ctxs: string[]) =>
     Array.from({ length: n }, () => take("en", ctxs)?.text).filter((t): t is string => !!t)
-  const lang = (l: Lang) => take(l) ?? { lang: l, text: "", meaning: "", ctx: "" }
 
   const night = take("en", ["doom"])?.text ?? ""
   const morning = take("en", ["wake"])?.text ?? ""
   const closing = take("en", ["doom", "streak"])?.text ?? ""
-  return {
-    night,
-    morning,
-    closing,
-    bubbles: many(2, ["doom", "busted"]),
-    marquee: many(8, ["doom", "busted"]),
-    langs: { en: lang("en"), hi: lang("hi"), mr: lang("mr"), kn: lang("kn") },
+  const bubbles = many(2, ["doom", "busted"])
+  const marquee = many(8, ["doom", "busted"])
+  const langs: Roast[] = []
+  for (let added = true; added; ) {
+    added = false
+    for (const l of ["en", "hi", "mr", "kn"] as const) {
+      const r = take(l)
+      if (r) {
+        langs.push(r)
+        added = true
+      }
+    }
   }
+  return { night, morning, closing, bubbles, marquee, langs }
 }
