@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 // shadcn's button, trimmed: no radix Slot. Links take `buttonVariants()` as a
 // className instead of `asChild`. Every size is at least 44px tall.

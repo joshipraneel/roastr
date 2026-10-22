@@ -1,14 +1,20 @@
 import { useRef } from "react"
-import { gsap, SplitText, useGSAP, useReducedMotion } from "@/lib/motion"
+import { Download, Info } from "lucide-react"
+import { buttonVariants } from "@/components/ui/button"
+import { ShineBorder } from "@/components/ui/shine-border"
+import { gsap, SplitText, useGSAP, useReveal } from "@/lib/motion"
+import { APK, REPO } from "@/lib/links"
 
-const APK = "https://github.com/joshipraneel/roastr/releases/latest/download/roastr.apk"
-const REPO = "https://github.com/joshipraneel/roastr"
-const link = "font-semibold text-primary underline-offset-4 hover:underline"
+const steps = [
+  ["Download", "Get roastr.apk on your Android phone (Android 12 or newer)."],
+  ["Allow the install", "Open it. If Android asks, allow your browser to install apps."],
+  ["Get insulted", "Open Roastr and let it roast you through setup."],
+]
 
 // The page roasts you for reaching the bottom, then shows how to install.
 export function Closing({ roast }: { roast: string }) {
   const root = useRef<HTMLElement>(null)
-  const reduced = useReducedMotion()
+  const reduced = useReveal(root)
 
   useGSAP(
     () => {
@@ -16,9 +22,9 @@ export function Closing({ roast }: { roast: string }) {
       const split = SplitText.create("[data-closing-title]", { type: "words", mask: "words" })
       gsap.from(split.words, {
         yPercent: 110,
-        duration: 0.7,
-        ease: "power4.out",
-        stagger: 0.06,
+        duration: 0.8,
+        ease: "expo.out",
+        stagger: 0.05,
         scrollTrigger: { trigger: "[data-closing-title]", start: "top 80%" },
       })
       return () => split.revert()
@@ -27,45 +33,39 @@ export function Closing({ roast }: { roast: string }) {
   )
 
   return (
-    <>
-      <section ref={root} id="install" className="mx-auto max-w-6xl px-4 py-24">
-        <h2 data-closing-title className="text-[clamp(2.8rem,9vw,6.5rem)] leading-[0.9] font-black tracking-[-0.04em]">
-          Still scrolling? <span className="text-primary">That's kind of the problem.</span>
-        </h2>
-        {roast && <p className="mt-6 max-w-2xl text-xl font-bold">“{roast}”</p>}
+    <section ref={root} id="install" className="mx-auto max-w-6xl px-5 py-section text-center md:px-8">
+      <h2 data-closing-title className="mx-auto max-w-4xl font-display text-display-xl text-balance">
+        Still scrolling? <span className="text-primary">That's kind of the problem.</span>
+      </h2>
+      {roast && <p className="mx-auto mt-6 max-w-2xl text-lede text-muted-foreground">“{roast}”</p>}
 
-        <div className="mt-12 grid gap-10 md:grid-cols-2">
-          <div>
-            <a href={APK} className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-lg font-extrabold text-primary-foreground shadow-[0_10px_30px_var(--glow)] transition-transform hover:-translate-y-0.5">
-              <span aria-hidden="true">⬇</span> Download for Android
-            </a>
-            <p className="mt-3 text-sm text-muted-foreground">Free · Android 12+ · No account, no ads, no internet · 18+</p>
-          </div>
-          <div>
-            <h3 className="text-xl font-extrabold">Install</h3>
-            <ol className="mt-3 list-decimal space-y-2 pl-5 text-muted-foreground">
-              <li>Download <a className={link} href={APK}>roastr.apk</a> on your Android phone (Android 12 or newer).</li>
-              <li>Open it. If Android asks, allow your browser to install apps.</li>
-              <li>Open Roastr and let it insult you through setup.</li>
-            </ol>
-            <p className="mt-4 text-sm text-muted-foreground">
-              To update, install the newer APK over the old one. Your stats are kept. On Android 14 or newer, open the Wake-up page once after setting an alarm and tap <b>Allow full-screen alarm</b> if it shows.
-            </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Coming to Google Play. Until then, updates are on the <a className={link} href={`${REPO}/releases`}>releases page</a>.{" "}
-              <a className={link} href={`${REPO}#permissions-and-why`}>Permissions, FAQ and checksum on GitHub</a>.
-            </p>
-          </div>
-        </div>
-      </section>
+      <div data-up className="relative mx-auto mt-12 max-w-xl overflow-hidden rounded-3xl bg-surface-1 px-4 py-8 shadow-raised md:p-8">
+        <ShineBorder shineColor={["#ff5247", "#ffd54f"]} duration={10} />
+        <a href={APK} className={buttonVariants({ variant: "key", size: "xl" })}>
+          <Download /> Download for Android
+        </a>
+        <p className="mt-4 text-sm text-muted-foreground">Free · Android 12+ · No account, no ads, no internet · 18+</p>
+      </div>
 
-      <footer className="border-t">
-        <div className="mx-auto max-w-6xl px-4 pt-7 pb-12 text-sm text-muted-foreground">
-          Roastr is for adults. The roasts are rude; that's the point. ·{" "}
-          <a className="underline-offset-4 hover:underline" href={`${import.meta.env.BASE_URL}privacy/`}>Privacy</a> ·{" "}
-          <a className="underline-offset-4 hover:underline" href={REPO}>GitHub</a>
+      <ol className="mt-12 grid gap-4 text-left md:grid-cols-3">
+        {steps.map(([title, body], i) => (
+          <li key={title} data-up className="relative overflow-hidden rounded-3xl bg-surface-1 p-6 shadow-card">
+            <span className="font-display text-display-md text-primary">{i + 1}</span>
+            <h3 className="mt-3 font-semibold">{title}</h3>
+            <p className="mt-1 text-muted-foreground">{body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <details data-up className="mx-auto mt-6 max-w-3xl rounded-2xl bg-surface-1 text-left shadow-card">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-5 font-semibold [&::-webkit-details-marker]:hidden">
+          <Info className="size-4 text-muted-foreground" aria-hidden="true" /> Updating, and Android 14+
+        </summary>
+        <div className="space-y-3 px-5 pb-5 text-muted-foreground">
+          <p>To update, install the newer APK over the old one. Your stats are kept. Coming to Google Play; until then, updates are on the <a className="font-semibold text-primary underline underline-offset-4" href={`${REPO}/releases`}>releases page</a>.</p>
+          <p>On Android 14 or newer, open the Wake-up page once after setting an alarm and tap <b className="text-foreground">Allow full-screen alarm</b> if it shows. Without it, the alarm is just a notification you can swipe away.</p>
         </div>
-      </footer>
-    </>
+      </details>
+    </section>
   )
 }

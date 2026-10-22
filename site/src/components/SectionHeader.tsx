@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 // Eyebrow, title and lede: how every section on the page opens.
 export function SectionHeader({

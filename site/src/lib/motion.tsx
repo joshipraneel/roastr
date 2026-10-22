@@ -1,4 +1,4 @@
-import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react"
+import { useEffect, useRef, useSyncExternalStore, type ReactNode, type RefObject } from "react"
 import { ReactLenis, useLenis, type LenisRef } from "lenis/react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -67,6 +67,24 @@ function SyncScrollTrigger() {
     return () => document.removeEventListener("click", onClick)
   }, [lenis])
   return null
+}
+
+// Fades every [data-up] inside `scope` up into place as it scrolls into view.
+export function useReveal(scope: RefObject<HTMLElement | null>) {
+  const reduced = useReducedMotion()
+  useGSAP(
+    () => {
+      if (reduced) return
+      gsap.set("[data-up]", { autoAlpha: 0, y: 24 })
+      ScrollTrigger.batch("[data-up]", {
+        start: "top 88%",
+        once: true,
+        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 }),
+      })
+    },
+    { scope, dependencies: [reduced] }
+  )
+  return reduced
 }
 
 export { gsap, ScrollTrigger, SplitText, useGSAP }
