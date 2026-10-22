@@ -156,7 +156,7 @@ export function NightScene({ roast }: { roast: string }) {
 
   return (
     <section ref={root} className="relative isolate grid min-h-svh place-items-center overflow-hidden px-5 py-10 lg:px-8">
-        <button data-skip hidden className="absolute top-20 right-5 z-10 h-11 rounded-full border border-border-strong bg-surface-1/80 px-4 text-sm text-muted-foreground backdrop-blur transition-colors hover:text-foreground lg:right-8">
+        <button data-skip hidden className="absolute top-20 right-5 z-10 max-md:top-auto max-md:bottom-24 h-11 rounded-full border border-border-strong bg-surface-1/80 px-4 text-sm text-muted-foreground backdrop-blur transition-colors hover:text-foreground lg:right-8">
           Skip scene ↓
         </button>
       <div className="glow-spot pointer-events-none absolute inset-0 -z-10 m-auto size-[720px] opacity-60" />
@@ -177,7 +177,7 @@ export function NightScene({ roast }: { roast: string }) {
           </p>
         </div>
 
-        <div className="device mx-auto aspect-[9/19.5] h-[min(50svh,600px)] lg:h-[min(72svh,600px)]">
+        <div className="device mx-auto aspect-[9/19.5] h-[min(56svh,600px)] md:h-[min(72svh,600px)]">
           <div className="@container relative h-full bg-black">
             {/* The reels app, resting closed. */}
             <div data-app className="invisible absolute inset-0 opacity-0">

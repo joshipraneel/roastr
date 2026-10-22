@@ -80,8 +80,8 @@ function SyncScrollTrigger() {
 
 // Plays a pinned scene one beat per scroll, swipe or arrow key, so a fast
 // scroller still sees every change. The page holds while the scene is at the
-// top; past the last beat (or on Skip) it scrolls on, and scrolling back up
-// walks back through the beats. Beats are the timeline's labels.
+// top; past the last beat (or on Skip) it scrolls on. It holds only on the
+// first pass down; scrolling up never gets stopped. Beats are the timeline's labels.
 // ponytail: holding the page is deliberate scroll-jacking the user asked for;
 // Skip, keys and nav links always get out.
 export function stepScene(trigger: Element, tl: gsap.core.Timeline, { end = "+=30%", speed = 4.5, skip }: { end?: string; speed?: number; skip?: HTMLElement | null }) {
@@ -89,6 +89,8 @@ export function stepScene(trigger: Element, tl: gsap.core.Timeline, { end = "+=3
   let idx = 0
   let busy = false
   let locked = false
+  // Watched to the end (or skipped): never hold the page again this visit.
+  let done = false
 
   const show = (on: boolean) => skip && (skip.hidden = !on)
   const unlock = () => {
@@ -99,13 +101,14 @@ export function stepScene(trigger: Element, tl: gsap.core.Timeline, { end = "+=3
     lenisNow?.start()
   }
   const release = (down: boolean) => {
+    if (down) done = true
     unlock()
     lenisNow?.scrollTo(down ? st.end + 2 : st.start - 2, { force: true })
   }
-  const lock = (i: number) => {
+  const lock = (i: number, overshot = false) => {
     // Skip anchor jumps, and jumps that land past the scene (scrollbar drag,
-    // Home/End, a restored scroll position).
-    if (nav.jumping || !lenisNow || st.progress <= 0 || st.progress >= 1) return
+    // Home/End, a restored scroll position) unless it was a small overshoot.
+    if (nav.jumping || !lenisNow || (!overshot && (st.progress <= 0 || st.progress >= 1))) return
     locked = true
     busy = false
     idx = i
@@ -139,9 +142,15 @@ export function stepScene(trigger: Element, tl: gsap.core.Timeline, { end = "+=3
     start: "top top",
     end,
     pin: true,
-    onEnter: () => lock(0),
-    onEnterBack: () => lock(labels.length - 1),
-    onLeave: unlock,
+    // Hold only on the way down, and only until it has been watched. Coming
+    // back up, the scene shows its last frame and scrolls past like any section.
+    // onUpdate rather than onEnter: a layout refresh mid-scroll (fonts,
+    // images) can move the range without firing onEnter.
+    onUpdate: (self) => !locked && !done && self.direction === 1 && lock(0),
+    onEnterBack: () => !locked && tl.seek(labels[labels.length - 1]),
+    // A wheel step or PageDown can carry the page clean past the short range
+    // in one update. If it landed less than a screen past, pull back and hold.
+    onLeave: (self) => (!locked && !done && scrollY - self.end < innerHeight ? lock(0, true) : unlock()),
     onLeaveBack: unlock,
   })
   const obs = Observer.create({ target: window, type: "wheel,touch", wheelSpeed: -1, tolerance: 10, preventDefault: true, onUp: () => step(1), onDown: () => step(-1) })

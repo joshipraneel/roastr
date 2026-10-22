@@ -91,7 +91,7 @@ export function MorningScene({ roast }: { roast: string }) {
 
   return (
     <section ref={root} className="relative isolate grid min-h-svh place-items-center overflow-hidden px-5 py-10 md:px-8">
-        <button data-skip hidden className="absolute top-20 right-5 z-10 h-11 rounded-full border border-border-strong bg-surface-1/80 px-4 text-sm text-muted-foreground backdrop-blur transition-colors hover:text-foreground md:right-8">
+        <button data-skip hidden className="absolute top-20 right-5 z-10 max-md:top-auto max-md:bottom-24 h-11 rounded-full border border-border-strong bg-surface-1/80 px-4 text-sm text-muted-foreground backdrop-blur transition-colors hover:text-foreground md:right-8">
           Skip scene ↓
         </button>
       <div data-sky className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent_0%,#2a0f1a55_40%,#8a2a1e66_80%,#ff7a5944_100%)]" />
